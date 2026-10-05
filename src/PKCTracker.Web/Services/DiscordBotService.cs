@@ -55,6 +55,8 @@ public class DiscordBotService : BackgroundService
                 Console.WriteLine($"Parsed Checkout Result: Profile={checkoutResult.Profile}, OrderNumber={checkoutResult.OrderNumber}, Success={checkoutResult.Success}, OrderLink={checkoutResult.OrderLink}");
             }
         }
+
+        return Task.CompletedTask;
     }
 
     private String GetBotToken()
