@@ -35,16 +35,20 @@ public class DiscordBotService : BackgroundService
     private Task OnReadyAsync()
     {
         Console.WriteLine($"Discord bot connected as {_client.CurrentUser.Username}");
+
         return Task.CompletedTask;
     }
 
     private Task OnMessageReceivedAsync(SocketMessage message)
     {
+        Console.WriteLine($"Message received from {message.Author.Username}: {message.Content}");
 
+        return Task.CompletedTask;
     }
 
     private String GetBotToken()
     {
         return _configuration["Discord:BotToken"] ?? throw new InvalidOperationException("Discord bot token is not configured.");
     }
+
 }
