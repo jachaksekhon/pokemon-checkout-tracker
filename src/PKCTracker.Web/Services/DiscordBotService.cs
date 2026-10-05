@@ -1,5 +1,6 @@
 using Discord;
 using Discord.WebSocket;
+using PKCTracker.Web.Interfaces;
 
 namespace PKCTracker.Web.Services;
 
@@ -7,8 +8,9 @@ public class DiscordBotService : BackgroundService
 {
     private readonly DiscordSocketClient _client;
     private readonly IConfiguration _configuration;
+    private readonly IWebhookParser _webhookParser ;
 
-    public DiscordBotService(IConfiguration configuration)
+    public DiscordBotService(IConfiguration configuration, IWebhookParser webhookParser)
     {
         var config = new DiscordSocketConfig
         {
@@ -20,6 +22,8 @@ public class DiscordBotService : BackgroundService
         _client.MessageReceived += OnMessageReceivedAsync;
 
         _configuration = configuration;
+        _webhookParser = webhookParser;
+        
     }
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
@@ -41,9 +45,16 @@ public class DiscordBotService : BackgroundService
 
     private Task OnMessageReceivedAsync(SocketMessage message)
     {
-        Console.WriteLine($"Message received from {message.Author.Username}: {message.Content}");
+        if (message.Embeds.Count == 0) return Task.CompletedTask;
 
-        return Task.CompletedTask;
+        foreach (var embed in message.Embeds)
+        {
+            var checkoutResult = _webhookParser.Parse(embed);
+            if (checkoutResult != null)
+            {
+                Console.WriteLine($"Parsed Checkout Result: Profile={checkoutResult.Profile}, OrderNumber={checkoutResult.OrderNumber}, Success={checkoutResult.Success}, OrderLink={checkoutResult.OrderLink}");
+            }
+        }
     }
 
     private String GetBotToken()

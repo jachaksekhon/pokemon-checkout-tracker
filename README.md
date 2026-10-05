@@ -2,6 +2,10 @@
 
 The goal of this program is to track, in real time, successful and failed orders. This will allow users to fix their profiles so they can have a chance to checkout on the failed profiles
 
+## How it works
+
+You invite the discord bot to your server and it watches your checkout channel for any PKC checkouts. It grabs the messages, parses them extracting the profile and order link (assuming successful) and relays it to a dashboard for you to see in real time. 
+
 Example web hooks are received as the following:
 
 ##### Successful checkouts:
