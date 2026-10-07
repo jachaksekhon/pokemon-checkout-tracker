@@ -47,19 +47,34 @@ public class DiscordBotService : BackgroundService
     {
         if (message.Embeds.Count == 0) return Task.CompletedTask;
 
+        if (message.Channel is not SocketGuildChannel guildChannel)
+        {
+            return Task.CompletedTask;
+        }
+
+        var guildId = guildChannel.Guild.Id;
+
         foreach (var embed in message.Embeds)
         {
             var checkoutResult = _webhookParser.Parse(embed);
+
             if (checkoutResult != null)
             {
-                Console.WriteLine($"Parsed Checkout Result: Profile={checkoutResult.Profile}, OrderNumber={checkoutResult.OrderNumber}, Success={checkoutResult.Success}, OrderLink={checkoutResult.OrderLink}");
+                checkoutResult.GuildId = guildId;
+
+                Console.WriteLine(
+                    $"GuildId={checkoutResult.GuildId}, " +
+                    $"Profile={checkoutResult.Profile}, " +
+                    $"OrderNumber={checkoutResult.OrderNumber}, " +
+                    $"Success={checkoutResult.Success}, " +
+                    $"OrderLink={checkoutResult.OrderLink}");
             }
         }
 
         return Task.CompletedTask;
     }
 
-    private String GetBotToken()
+    private string GetBotToken()
     {
         return _configuration["Discord:BotToken"] ?? throw new InvalidOperationException("Discord bot token is not configured.");
     }
