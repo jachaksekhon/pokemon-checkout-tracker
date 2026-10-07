@@ -7,6 +7,5 @@ public class Drop
     public required string Name { get; set; }
     public bool IsActive { get; set; }
     public DateTime CreatedAt { get; set; }
-
     public List<ProfileResult> Profiles { get; set; } = [];
 }
