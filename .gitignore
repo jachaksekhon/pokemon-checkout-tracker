@@ -19,3 +19,6 @@ publish/
 *.nupkg
 *.snupkg
 .nuget/
+
+# database files
+*.db
