@@ -28,7 +28,7 @@ public class CheckoutService : ICheckoutService
         var existingProfile = await _db.ProfileResults
             .FirstOrDefaultAsync(p => p.DropId == currentDrop.Id && p.Profile == checkout.Profile);
 
-        // if profile exists and succes goes from failure -> success, update the existing record
+        // profile already exists, update it if new checkout is successful
         if (existingProfile != null)
         {
             if (!existingProfile.Success && checkout.Success)
