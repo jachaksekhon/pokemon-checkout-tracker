@@ -9,8 +9,9 @@ public class DiscordBotService : BackgroundService
     private readonly DiscordSocketClient _client;
     private readonly IConfiguration _configuration;
     private readonly IWebhookParser _webhookParser ;
+    private readonly IServiceScopeFactory _scopeFactory;
 
-    public DiscordBotService(IConfiguration configuration, IWebhookParser webhookParser)
+    public DiscordBotService(IConfiguration configuration, IWebhookParser webhookParser, IServiceScopeFactory scopeFactory)
     {
         var config = new DiscordSocketConfig
         {
@@ -23,6 +24,7 @@ public class DiscordBotService : BackgroundService
 
         _configuration = configuration;
         _webhookParser = webhookParser;
+        _scopeFactory = scopeFactory;
         
     }
 
@@ -43,13 +45,13 @@ public class DiscordBotService : BackgroundService
         return Task.CompletedTask;
     }
 
-    private Task OnMessageReceivedAsync(SocketMessage message)
+    private async Task OnMessageReceivedAsync(SocketMessage message)
     {
-        if (message.Embeds.Count == 0) return Task.CompletedTask;
+        if (message.Embeds.Count == 0) return;
 
         if (message.Channel is not SocketGuildChannel guildChannel)
         {
-            return Task.CompletedTask;
+            return;
         }
 
         var guildId = guildChannel.Guild.Id;
