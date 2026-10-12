@@ -70,10 +70,16 @@ public class DiscordBotService : BackgroundService
                     $"OrderNumber={checkoutResult.OrderNumber}, " +
                     $"Success={checkoutResult.Success}, " +
                     $"OrderLink={checkoutResult.OrderLink}");
+
+                using var scope = _scopeFactory.CreateScope();
+
+                var checkoutService = scope.ServiceProvider
+                    .GetRequiredService<ICheckoutService>();
+
+                await checkoutService.ProcessCheckoutAsync(checkoutResult);
             }
         }
 
-        return Task.CompletedTask;
     }
 
     private string GetBotToken()
